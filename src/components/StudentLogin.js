@@ -1,34 +1,66 @@
-import React from "react";
-import "../styles/StudentLogin.css";
-import backgroundImage from "../images/backgroundlanding.jpeg"; // Import the background image
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 const StudentLogin = () => {
-    return (
-        <div className="login-page">
-            {/* Background Image */}
-            <img src={backgroundImage} alt="Background" className="background-image" />
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-            {/* Main Login Content */}
-            <div className="main-content">
-                <div className="overlay">
-                    <h2>Student Login</h2>
-                    <form>
+    const handleLogin = (e) => {
+        e.preventDefault();
+        setError("");
+        console.log("Login button clicked, navigating to /studentdashboard");
+        navigate("/studentdashboard");
+    };
+
+    return (
+        <div className="auth-page">
+            <div className="auth-container">
+                <div className="auth-header">
+                    <h2>Welcome Back, Student!</h2>
+                    <p>Please login to access your dashboard</p>
+                </div>
+
+                <form className="auth-form" onSubmit={handleLogin}>
                         <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                            <input type="email" id="email" placeholder="Enter your email" required />
+                        <label htmlFor="email">Email Address</label>
+                            <input
+                                type="email"
+                                id="email"
+                            className="form-control"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
                         </div>
 
                         <div className="form-group">
                             <label htmlFor="password">Password</label>
-                            <input type="password" id="password" placeholder="Enter your password" required />
+                            <input
+                                type="password"
+                                id="password"
+                            className="form-control"
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
                         </div>
 
-                        <button type="submit">Login</button>
+                    {error && <div className="error-message">{error}</div>}
 
-                        <p className="register-prompt">
-                            Don't have an account? <a href="/studentregistration">Register here</a>
+                    <button type="submit" className="auth-button">
+                        Login
+                    </button>
+                </form>
+
+                <div className="auth-footer">
+                    <p>
+                        Don't have an account?{" "}
+                        <Link to="/studentregistration">Register here</Link>
                         </p>
-                    </form>
                 </div>
             </div>
         </div>

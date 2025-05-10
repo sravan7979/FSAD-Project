@@ -1,24 +1,37 @@
-import React from "react";
-import "../styles/TeacherLogin.css"; // Reuse the StudentLogin styles for consistency
-import backgroundImage from "../images/backgroundlanding.jpeg"; // Import the background image
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 const TeacherLogin = () => {
-    return (
-        <div className="login-page">
-            {/* Background Image */}
-            <img src={backgroundImage} alt="Background" className="background-image" />
+  const [teacherId, setTeacherId] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-            {/* Main Login Content */}
-            <div className="main-content">
-                <div className="overlay">
-                    <h2>Teacher Login</h2>
-                    <form>
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setError("");
+    // Always navigate to dashboard for demo/testing
+    navigate("/teacherdashboard");
+  };
+
+    return (
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-header">
+          <h2>Welcome Back, Teacher!</h2>
+          <p>Please login to access your dashboard</p>
+        </div>
+
+        <form className="auth-form" onSubmit={handleLogin}>
                         <div className="form-group">
-                            <label htmlFor="teacherID">Teacher ID</label>
+            <label htmlFor="teacherId">Teacher ID</label>
                             <input
                                 type="text"
-                                id="teacherID"
-                                placeholder="Enter your Teacher ID"
+              id="teacherId"
+              className="form-control"
+              placeholder="Enter your Teacher ID"
+              value={teacherId}
+              onChange={(e) => setTeacherId(e.target.value)}
                                 required
                             />
                         </div>
@@ -28,17 +41,26 @@ const TeacherLogin = () => {
                             <input
                                 type="password"
                                 id="password"
+              className="form-control"
                                 placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
                         </div>
 
-                        <button type="submit">Login</button>
+          {error && <div className="error-message">{error}</div>}
 
-                        <p className="register-prompt">
-                            Don't have an account? <a href="/teacherregistration">Register here</a>
+          <button type="submit" className="auth-button">
+            Login
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          <p>
+            Don't have an account?{" "}
+            <Link to="/teacherregistration">Register here</Link>
                         </p>
-                    </form>
                 </div>
             </div>
         </div>

@@ -1,48 +1,78 @@
-import React from "react";
-import "../styles/ParentLogin.css";
-import backgroundImage from "../images/backgroundlanding.jpeg";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 const ParentLogin = () => {
-    return (
-        <div className="login-page">
-            {/* Background Image */}
-            <img src={backgroundImage} alt="Background" className="background-image" />
+  const [parentId, setParentId] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-            {/* Main Login Content */}
-            <div className="main-content">
-                <div className="overlay">
-                    <h2>Parent Login</h2>
-                    <form>
-                        <div className="form-group">
-                            <label htmlFor="parentID">Parent ID</label>
-                            <input
-                                type="text"
-                                id="parentID"
-                                placeholder="Enter your Parent ID"
-                                required
-                            />
-                        </div>
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setError("");
 
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <input
-                                type="password"
-                                id="password"
-                                placeholder="Enter your password"
-                                required
-                            />
-                        </div>
+    // Sample credentials for authentication
+    const sampleParentId = "P12345";
+    const samplePassword = "password123";
 
-                        <button type="submit">Login</button>
+    if (parentId === sampleParentId && password === samplePassword) {
+      navigate("/parentdashboard");
+    } else {
+      setError("Invalid Parent ID or password. Please try again.");
+    }
+  };
 
-                        <p className="register-prompt">
-                            Don't have an account? <a href="/parentregistration">Register here</a>
-                        </p>
-                    </form>
-                </div>
-            </div>
+  return (
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-header">
+          <h2>Welcome Back, Parent!</h2>
+          <p>Please login to access your dashboard</p>
         </div>
-    );
+
+        <form className="auth-form" onSubmit={handleLogin}>
+          <div className="form-group">
+            <label htmlFor="parentId">Parent ID</label>
+            <input
+              type="text"
+              id="parentId"
+              className="form-control"
+              placeholder="Enter your Parent ID"
+              value={parentId}
+              onChange={(e) => setParentId(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              className="form-control"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {error && <div className="error-message">{error}</div>}
+
+          <button type="submit" className="auth-button">
+            Login
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          <p>
+            Don't have an account?{" "}
+            <Link to="/parentregistration">Register here</Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ParentLogin;
