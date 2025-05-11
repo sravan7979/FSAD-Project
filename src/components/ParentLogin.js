@@ -1,24 +1,22 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { loginParent } from "../services/api";
 
 const ParentLogin = () => {
-  const [parentId, setParentId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-
-    // Sample credentials for authentication
-    const sampleParentId = "P12345";
-    const samplePassword = "password123";
-
-    if (parentId === sampleParentId && password === samplePassword) {
+    try {
+      const response = await loginParent({ email, password });
+      localStorage.setItem("parent", JSON.stringify(response.data));
       navigate("/parentdashboard");
-    } else {
-      setError("Invalid Parent ID or password. Please try again.");
+    } catch (err) {
+      setError(err.response?.data || "Login failed.");
     }
   };
 
@@ -32,14 +30,14 @@ const ParentLogin = () => {
 
         <form className="auth-form" onSubmit={handleLogin}>
           <div className="form-group">
-            <label htmlFor="parentId">Parent ID</label>
+            <label htmlFor="email">Email Address</label>
             <input
-              type="text"
-              id="parentId"
+              type="email"
+              id="email"
               className="form-control"
-              placeholder="Enter your Parent ID"
-              value={parentId}
-              onChange={(e) => setParentId(e.target.value)}
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>

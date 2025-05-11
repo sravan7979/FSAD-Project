@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import "../styles/Auth.css";
 import "../styles/StudentRegistration.css";
 import backgroundImage from "../images/backgroundlanding.jpeg"; // Import the background image
+import { registerStudent } from "../services/api";
 
 const StudentRegistration = () => {
     const [formData, setFormData] = useState({
@@ -25,14 +26,23 @@ const StudentRegistration = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-
-        // Here you would typically make an API call to register the student
-        // For now, we'll just simulate a successful registration
-        console.log("Registration data:", formData);
-        navigate("/studentlogin");
+        try {
+            await registerStudent(formData);
+            navigate("/studentlogin");
+        } catch (err) {
+            let msg = "Registration failed.";
+            if (err.response?.data) {
+                if (typeof err.response.data === "string") {
+                    msg = err.response.data;
+                } else if (typeof err.response.data === "object" && err.response.data.message) {
+                    msg = err.response.data.message;
+                }
+            }
+            setError(msg);
+        }
     };
 
     return (

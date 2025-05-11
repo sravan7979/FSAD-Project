@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Auth.css";
+import { registerTeacher } from "../services/api";
 
 const TeacherRegistration = () => {
     const [formData, setFormData] = useState({
@@ -9,7 +10,8 @@ const TeacherRegistration = () => {
         email: "",
         phoneNumber: "",
         password: "",
-        gender: ""
+        gender: "",
+        section: ""
     });
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -22,14 +24,23 @@ const TeacherRegistration = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-
-        // Here you would typically make an API call to register the teacher
-        // For now, we'll just simulate a successful registration
-        console.log("Registration data:", formData);
-        navigate("/teacherlogin");
+        try {
+            await registerTeacher(formData);
+            navigate("/teacherlogin");
+        } catch (err) {
+            let msg = "Registration failed.";
+            if (err.response?.data) {
+                if (typeof err.response.data === "string") {
+                    msg = err.response.data;
+                } else if (typeof err.response.data === "object" && err.response.data.message) {
+                    msg = err.response.data.message;
+                }
+            }
+            setError(msg);
+        }
     };
 
     return (
@@ -120,6 +131,19 @@ const TeacherRegistration = () => {
                                 <option value="female">Female</option>
                                 <option value="other">Other</option>
                             </select>
+                        </div>
+
+                        <div className="form-group">
+                        <label htmlFor="section">Section</label>
+                        <input
+                            type="text"
+                            id="section"
+                            className="form-control"
+                            placeholder="Enter your section"
+                            value={formData.section}
+                            onChange={handleChange}
+                            required
+                        />
                         </div>
 
                     {error && <div className="error-message">{error}</div>}

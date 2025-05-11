@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Auth.css";
+import { registerParent } from "../services/api";
 
 const ParentRegistration = () => {
     const [formData, setFormData] = useState({
@@ -23,14 +24,23 @@ const ParentRegistration = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-
-        // Here you would typically make an API call to register the parent
-        // For now, we'll just simulate a successful registration
-        console.log("Registration data:", formData);
-        navigate("/parentlogin");
+        try {
+            await registerParent(formData);
+            navigate("/parentlogin");
+        } catch (err) {
+            let msg = "Registration failed.";
+            if (err.response?.data) {
+                if (typeof err.response.data === "string") {
+                    msg = err.response.data;
+                } else if (typeof err.response.data === "object" && err.response.data.message) {
+                    msg = err.response.data.message;
+                }
+            }
+            setError(msg);
+        }
     };
 
     return (

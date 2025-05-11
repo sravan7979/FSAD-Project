@@ -1,20 +1,26 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { loginTeacher } from "../services/api";
 
 const TeacherLogin = () => {
-  const [teacherId, setTeacherId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    // Always navigate to dashboard for demo/testing
-    navigate("/teacherdashboard");
+    try {
+      const response = await loginTeacher({ email, password });
+      localStorage.setItem("teacher", JSON.stringify(response.data));
+      navigate("/teacherdashboard");
+    } catch (err) {
+      setError(err.response?.data || "Login failed.");
+    }
   };
 
-    return (
+  return (
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
@@ -23,31 +29,31 @@ const TeacherLogin = () => {
         </div>
 
         <form className="auth-form" onSubmit={handleLogin}>
-                        <div className="form-group">
-            <label htmlFor="teacherId">Teacher ID</label>
-                            <input
-                                type="text"
-              id="teacherId"
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
               className="form-control"
-              placeholder="Enter your Teacher ID"
-              value={teacherId}
-              onChange={(e) => setTeacherId(e.target.value)}
-                                required
-                            />
-                        </div>
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <input
-                                type="password"
-                                id="password"
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
               className="form-control"
-                                placeholder="Enter your password"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
+              required
+            />
+          </div>
 
           {error && <div className="error-message">{error}</div>}
 
@@ -60,11 +66,11 @@ const TeacherLogin = () => {
           <p>
             Don't have an account?{" "}
             <Link to="/teacherregistration">Register here</Link>
-                        </p>
-                </div>
-            </div>
+          </p>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default TeacherLogin;

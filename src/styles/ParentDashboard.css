@@ -125,7 +125,7 @@
   min-width: 400px;
   max-width: 900px;
   width: 100%;
-  animation: fadeSlideIn 1.2s cubic-bezier(.4,2,.6,1) forwards;
+  animation: fadeSlideIn 1.5s ease-out forwards;
   opacity: 0;
   text-shadow: none;
 }
